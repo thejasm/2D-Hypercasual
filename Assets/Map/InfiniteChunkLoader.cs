@@ -1,62 +1,43 @@
 using UnityEngine;
-using System.Collections.Generic;
+using System.Collections; // Required for Coroutines
 using InteliMapPro;
 
 public class InfiniteChunkLoader: MonoBehaviour {
-    [Header("References")]
-    public InteliMapGenerator inteliMapGenerator;
-    public Camera mainCamera;
+    public InteliMapGenerator generator;
+    public Camera mainCam;
 
-    [Header("Chunk Settings")]
     public int chunkSize = 25;
-    public int loadRadius = 1;
+    public int loadRadius = 1; // loadRadius = 0 means only current chunk, 1 means 3x3, etc.
 
     private Grid grid;
-    private Vector2Int currentCamChunkCoord;
-    private HashSet<Vector2Int> chunksBeingGenerated;
-    private HashSet<Vector2Int> generatedChunks;
+    private Vector2Int currentCamChunk; // Renamed to avoid confusion with loop variable
+    private Coroutine chunkLoadingCoroutine;
 
     void Start() {
-        if (mainCamera == null) mainCamera = Camera.main;
+        if (mainCam == null) mainCam = Camera.main;
 
-        if (inteliMapGenerator == null) {
-            Debug.LogError("InteliMapGenerator not assigned.");
-            enabled = false;
-            return;
-        }
+        // object generatorData = generator.generatorData; // This line is unused
 
-        // Store generatorData if you need to pass it to other InteliMap API calls.
-        // For now, we're not directly using it in this script's logic beyond this point,
-        // as the Generate call is assumed to be on inteliMapGenerator itself.
-        object intelimapData = inteliMapGenerator.generatorData;
-        if (intelimapData == null) {
-            Debug.LogWarning("InteliMapGenerator.generatorData is null. This might be okay if not directly used by the Generate method.");
-        }
-
-        // Get the Grid component
-        grid = inteliMapGenerator.GetComponentInParent<Grid>();
+        grid = generator.GetComponentInParent<Grid>();
         if (grid == null) {
-            Debug.LogError("Grid component not found on InteliMapGenerator's GameObject or its parents.");
+            Debug.LogError("Grid component not found on the parent of the InteliMapGenerator. Disabling InfiniteChunkLoader.");
             enabled = false;
             return;
         }
 
-        chunksBeingGenerated = new HashSet<Vector2Int>();
-        generatedChunks = new HashSet<Vector2Int>(); // Initialize our custom tracking
-        currentCamChunkCoord = GetChunkCoordFromWorldPos(mainCamera.transform.position);
-        LoadChunksAround(currentCamChunkCoord);
+        currentCamChunk = GetChunkCoordFromWorldPos(mainCam.transform.position);
+        StartLoadingChunksFor(currentCamChunk);
     }
 
     void Update() {
-        Vector2Int newCamChunkCoord = GetChunkCoordFromWorldPos(mainCamera.transform.position);
-        if (newCamChunkCoord != currentCamChunkCoord) {
-            currentCamChunkCoord = newCamChunkCoord;
-            LoadChunksAround(currentCamChunkCoord);
+        Vector2Int newCamChunk = GetChunkCoordFromWorldPos(mainCam.transform.position);
+        if (newCamChunk != currentCamChunk) {
+            currentCamChunk = newCamChunk;
+            StartLoadingChunksFor(currentCamChunk);
         }
     }
 
     Vector2Int GetChunkCoordFromWorldPos(Vector3 worldPos) {
-        if (grid == null) return Vector2Int.zero; // Should not happen if Start was successful
         Vector3Int cellPos = grid.WorldToCell(worldPos);
         return new Vector2Int(
             Mathf.FloorToInt((float)cellPos.x / chunkSize),
@@ -64,36 +45,44 @@ public class InfiniteChunkLoader: MonoBehaviour {
         );
     }
 
-    void LoadChunksAround(Vector2Int centerChunkCoord) {
-        for (int x = -loadRadius; x <= loadRadius; x++) {
-            for (int y = -loadRadius; y <= loadRadius; y++) {
-                TryGenChunk(new Vector2Int(centerChunkCoord.x + x, centerChunkCoord.y + y));
+    void StartLoadingChunksFor(Vector2Int centerChunk) {
+        if (chunkLoadingCoroutine != null) {
+            StopCoroutine(chunkLoadingCoroutine);
+        }
+        chunkLoadingCoroutine = StartCoroutine(LoadChunksSequentiallyCoroutine(centerChunk));
+    }
+
+    IEnumerator LoadChunksSequentiallyCoroutine(Vector2Int centerChunk) {
+        // Iterate from -loadRadius to +loadRadius for both x and y offsets
+        // This will cover the center chunk (when xOffset and yOffset are 0) and its neighbors.
+        for (int yOffset = -loadRadius; yOffset <= loadRadius; yOffset++) {
+            for (int xOffset = -loadRadius; xOffset <= loadRadius; xOffset++) {
+                Vector2Int chunkToLoad = new Vector2Int(centerChunk.x + xOffset, centerChunk.y + yOffset);
+
+                // Wait for the generator to finish its current async task
+                while (generator.IsAsyncOperationInProgress) {
+                    yield return null; // Wait for the next frame
+                }
+
+                // Now that the generator is free, proceed to generate the current chunkToLoad
+                BoundsInt chunkBounds = new BoundsInt(
+                    chunkToLoad.x * chunkSize, chunkToLoad.y * chunkSize, 0,
+                    chunkSize, chunkSize, 1
+                );
+
+                Debug.Log($"Requesting generation for chunk: {chunkToLoad}");
+
+                generator.boundsToFill = chunkBounds;
+                generator.StartGenerationAsync();
+
+                // Optional: brief yield after starting a generation.
+                // This can help if generations are extremely fast and you want to ensure
+                // IsAsyncOperationInProgress updates, or just to pace the requests slightly.
+                // If IsAsyncOperationInProgress is robust, this might not be strictly necessary
+                // but doesn't hurt.
+                yield return null;
             }
         }
+        chunkLoadingCoroutine = null; // Mark coroutine as finished
     }
-
-    void TryGenChunk(Vector2Int chunkCoord) {
-        // Check if we've already processed this chunk (told InteliMap to generate it)
-        if (generatedChunks.Contains(chunkCoord)) {
-            return;
-        }
-
-        // Check if InteliMap is currently busy generating this specific chunk (initiated by this script)
-        if (chunksBeingGenerated.Contains(chunkCoord)) {
-            return;
-        }
-
-        BoundsInt chunkBounds = new BoundsInt(
-            chunkCoord.x * chunkSize, chunkCoord.y * chunkSize, 0,
-            chunkSize, chunkSize, 1
-        );
-
-        chunksBeingGenerated.Add(chunkCoord); // Mark as "being generated by InteliMap"
-        Debug.Log($"Requesting InteliMap generation for chunk: {chunkCoord} with Bounds: {chunkBounds.min} to {chunkBounds.max - Vector3Int.one}");
-
-        inteliMapGenerator.boundsToFill = chunkBounds;
-        inteliMapGenerator.StartGeneration();
-    }
-
-
 }

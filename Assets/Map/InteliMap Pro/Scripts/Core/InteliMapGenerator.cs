@@ -160,7 +160,7 @@ namespace InteliMapPro
             SparseSet[,] domains = new SparseSet[boundsToFill.size.x, boundsToFill.size.y];
 
             Priority[,] priorities = new Priority[boundsToFill.size.x, boundsToFill.size.y];
-            int[] mapIndicies = GetMapIndiciesAndSetDomains(domains, priorities);
+            int[] mapIndicies = GetMapIndiciesAndSetDomains(domains, priorities, boundsToFill);
 
             GeneratorGenerationEngine gge = new GeneratorGenerationEngine(mapIndicies, domains, priorities, boundsToFill, generatorData, new System.Random(Random.Range(int.MinValue, int.MaxValue)), temperature);
 
@@ -199,27 +199,42 @@ namespace InteliMapPro
         /**
          * Starts the map generation asyncronously.
          */
-        public void StartGenerationAsync()
-        {
-            if (!GenerationChecks())
-            {
+        public void StartGenerationAsync() {
+            if (asyncThread != null && asyncThread.IsAlive) {
+                Debug.LogWarning("InteliMapGenerator.StartGenerationAsync called while another async operation is in progress. Request ignored.");
                 return;
             }
 
-            asyncBounds = boundsToFill;
+            if (!GenerationChecks()) {
+                return;
+            }
 
-            // maps each position in the grid to a dictionary containing a position of what else is in conflict, and that positions current index. If the index at that position isn't the corresponding value in the dictionary, it is not in conflict.
-            SparseSet[,] domains = new SparseSet[asyncBounds.size.x, asyncBounds.size.y];
+            // Capture the bounds for this specific asynchronous operation
+            BoundsInt currentOperationBounds = this.boundsToFill;
 
-            Priority[,] priorities = new Priority[asyncBounds.size.x, asyncBounds.size.y];
-            int[] mapIndicies = GetMapIndiciesAndSetDomains(domains, priorities);
+            // Setup domains and priorities using the captured bounds
+            SparseSet[,] domains = new SparseSet[currentOperationBounds.size.x, currentOperationBounds.size.y];
+            Priority[,] priorities = new Priority[currentOperationBounds.size.x, currentOperationBounds.size.y];
 
-            asyncGge = new GeneratorGenerationEngine(mapIndicies, domains, priorities, asyncBounds, generatorData, new System.Random(Random.Range(int.MinValue, int.MaxValue)), temperature);
+            // Pass the captured bounds to the modified GetMapIndiciesAndSetDomains
+            int[] mapIndicies = GetMapIndiciesAndSetDomains(domains, priorities, currentOperationBounds);
+
+            asyncGge = new GeneratorGenerationEngine(mapIndicies, domains, priorities, currentOperationBounds, generatorData, new System.Random(Random.Range(int.MinValue, int.MaxValue)), temperature);
+
+            // Store the captured bounds for the Update method to use when filling the map
+            this.asyncBounds = currentOperationBounds;
+            this.asyncMapIndicies = null; // Reset placeholder for results
 
             asyncThread = new Thread(() => {
-                asyncMapIndicies = asyncGge.Generate(forceful, randomOrder);
+                // This variable 'asyncMapIndicies' is a member, so it's captured by the closure.
+                // The GGE Generate method will populate it.
+                this.asyncMapIndicies = asyncGge.Generate(forceful, randomOrder);
             });
             asyncThread.Start();
+        }
+
+        public bool IsAsyncOperationInProgress {
+            get { return asyncThread != null && asyncThread.IsAlive; }
         }
 
         private void Update()
@@ -276,11 +291,11 @@ namespace InteliMapPro
             return true;
         }
 
-        private int[] GetMapIndiciesAndSetDomains(SparseSet[,] domains, Priority[,] priorities)
+        private int[] GetMapIndiciesAndSetDomains(SparseSet[,] domains, Priority[,] priorities, BoundsInt currentBounds)
         {
             SetupTileAtLayerToDomain();
 
-            int[] mapIndicies = new int[boundsToFill.size.x * boundsToFill.size.y];
+            int[] mapIndicies = new int[currentBounds.size.x * currentBounds.size.y];
 
             Dictionary<LayeredTile, int> map = new Dictionary<LayeredTile, int>(new LayeredTileComparer());
             for (int i = 0; i < generatorData.uniqueTiles.Length; i++)
@@ -291,12 +306,12 @@ namespace InteliMapPro
             TileBase[][] mapTiles = new TileBase[generatorData.layerCount][];
             for (int layer = 0; layer < generatorData.layerCount; layer++)
             {
-                mapTiles[layer] = mapToFill[layer].GetTilesBlock(boundsToFill);
+                mapTiles[layer] = mapToFill[layer].GetTilesBlock(currentBounds);
             }
 
-            for (int x = 0; x < boundsToFill.size.x; x++)
+            for (int x = 0; x < currentBounds.size.x; x++)
             {
-                for (int y = 0; y < boundsToFill.size.y; y++)
+                for (int y = 0; y < currentBounds.size.y; y++)
                 {
                     SparseSet domain = null;
                     priorities[x, y] = new Priority();
@@ -309,7 +324,7 @@ namespace InteliMapPro
 
                         for (int layer = 0; layer < generatorData.layerCount; layer++)
                         {
-                            thisTile.tiles[layer] = mapTiles[layer][x + y * boundsToFill.size.x];
+                            thisTile.tiles[layer] = mapTiles[layer][x + y * currentBounds.size.x];
                         }
 
                         int tileIdx;
@@ -326,7 +341,7 @@ namespace InteliMapPro
                     {
                         for (int layer = 0; layer < generatorData.layerCount; layer++)
                         {
-                            TileBase tile = mapTiles[layer][x + y * boundsToFill.size.x];
+                            TileBase tile = mapTiles[layer][x + y * currentBounds.size.x];
 
                             SparseSet outDomain;
                             if (tile != null && tileAtLayerToDomain[layer].TryGetValue(tile, out outDomain))
@@ -368,23 +383,23 @@ namespace InteliMapPro
                     }
                     else
                     {
-                        priorities[x, y].SetPriority((x == 0 || y == 0 || x == boundsToFill.size.x - 1 || y == boundsToFill.size.y - 1) ? 2 : 1, domain.Clone());
+                        priorities[x, y].SetPriority((x == 0 || y == 0 || x == currentBounds.size.x - 1 || y == currentBounds.size.y - 1) ? 2 : 1, domain.Clone());
                     }
 
                     domains[x, y] = domain;
 
                     if (domain.Count == 1)
                     {
-                        mapIndicies[x + y * boundsToFill.size.x] = domain.GetDense(0);
+                        mapIndicies[x + y * currentBounds.size.x] = domain.GetDense(0);
 
                         for (int layer = 0; layer < generatorData.layerCount; layer++)
                         {
-                            mapToFill[layer].SetTile(new Vector3Int(x + boundsToFill.position.x, y + boundsToFill.position.y), generatorData.uniqueTiles[domain.GetDense(0)].tiles[layer]);
+                            mapToFill[layer].SetTile(new Vector3Int(x + currentBounds.position.x, y + currentBounds.position.y), generatorData.uniqueTiles[domain.GetDense(0)].tiles[layer]);
                         }
                     }
                     else
                     {
-                        mapIndicies[x + y * boundsToFill.size.x] = uncollapsed;
+                        mapIndicies[x + y * currentBounds.size.x] = uncollapsed;
                     }
                 }
             }

@@ -7,19 +7,19 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveDir = Vector2.zero;
     private Animator anim;
-    private SpriteRenderer sprite;
+    private bool isFacingRight = true;
 
     public float moveSpeed = 5f;
 
     void Start(){
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        sprite = GetComponent<SpriteRenderer>();
     }
 
     void Update(){
         InputManager();
         AnimationHandler();
+        FlipHandler();
     }
 
     void FixedUpdate() {
@@ -27,20 +27,28 @@ public class PlayerController : MonoBehaviour
     }
 
     void InputManager() {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveY = Input.GetAxis("Vertical");
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveY = Input.GetAxisRaw("Vertical");
         moveDir = new Vector2(moveX, moveY).normalized;
     }
 
     void Move() {
-        rb.velocity = new Vector2(moveDir.x * moveSpeed, moveDir.y * moveSpeed);
+        rb.velocity = moveDir * moveSpeed;
     }
 
     void AnimationHandler() {
-        if (rb.velocity.magnitude > 0.1) anim.SetBool("walk", true);
-        else anim.SetBool("walk", false);
+        anim.SetBool("walk", rb.velocity.magnitude > 0.2f);
+    }
 
-        if(moveDir.x > 0) sprite.flipX = false;
-        else if(moveDir.x < 0) sprite.flipX = true;
+    void FlipHandler() {
+        if (moveDir.x > 0 && !isFacingRight) Flip();
+        else if (moveDir.x < 0 && isFacingRight) Flip();
+    }
+
+    void Flip() {
+        isFacingRight = !isFacingRight;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
     }
 }

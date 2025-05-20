@@ -38,6 +38,13 @@ public class WardBehaviour : MeleeBehaviour
                 markedEnemies.Add(other.gameObject);
         }
     }
+
+    protected void OnTriggerExit2D(Collider2D other) {
+        if (other.gameObject.CompareTag("Enemy") && markedEnemies.Contains(other.gameObject)) {
+            markedEnemies.Remove(other.gameObject);
+        }
+    }
+
     private void TickDamage() {
         damageTimer += Time.deltaTime;
         if (damageTimer < 0.25) return;

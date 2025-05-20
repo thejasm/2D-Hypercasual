@@ -16,6 +16,7 @@ public class EnemyController : MonoBehaviour
 
         currentHealth = stats.MaxHealth;
         currentSpeed = stats.Speed;
+
     }
 
     void Update(){
@@ -38,5 +39,11 @@ public class EnemyController : MonoBehaviour
 
     public void Destroy() {
             Destroy(gameObject);
+    }
+
+    private void OnCollisionStay2D(Collision2D col) {
+        if(col.gameObject.tag == "Player") {
+            col.gameObject.GetComponent<PlayerCore>().TakeDamage(stats.Damage);
+        }
     }
 }

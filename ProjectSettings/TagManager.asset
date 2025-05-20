@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Enemy
   - Weapon
+  - ExpGem
+  - Food
   layers:
   - Default
   - TransparentFX
@@ -51,4 +53,7 @@ TagManager:
     locked: 0
   - name: Entities
     uniqueID: 4067815225
+    locked: 0
+  - name: UI
+    uniqueID: 1116565647
     locked: 0

@@ -524,27 +524,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: zeo254-completed-commission_30
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 48
-        width: 16
-        height: 16
-      alignment: 9
-      pivot: {x: 0.46512794, y: 0.2576425}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6d318b5f9d0717b4e85ee0d58ff90b34
-      internalID: -1194074327
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: zeo254-completed-commission_31
       rect:
         serializedVersion: 2
@@ -739,27 +718,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: zeo254-completed-commission_40
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 32
-        width: 16
-        height: 16
-      alignment: 9
-      pivot: {x: 0.506948, y: 0.99019456}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 154ec7490a40f914b8ebd91a2f24ac86
-      internalID: -1690830312
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: zeo254-completed-commission_41
       rect:
         serializedVersion: 2
@@ -831,7 +789,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 9
-      pivot: {x: 0.49999997, y: 0.3878647}
+      pivot: {x: 0.5, y: 0.93255925}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -852,7 +810,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 9
-      pivot: {x: 0.5, y: 0.28}
+      pivot: {x: 0.49460697, y: 0.9703058}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -873,7 +831,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 9
-      pivot: {x: 0.50810957, y: 0.5729873}
+      pivot: {x: 0.4973235, y: 0.92892635}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -902,27 +860,6 @@ TextureImporter:
       bones: []
       spriteID: 5186d5347fb479a438bae5d34da17c5d
       internalID: 553654429
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: zeo254-completed-commission_48
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 16
-        width: 16
-        height: 16
-      alignment: 9
-      pivot: {x: 0.49305105, y: 1.0006442}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7f1e0f0a3c69b84458ce7161af43b911
-      internalID: -22383437
       vertices: []
       indices: 
       edges: []

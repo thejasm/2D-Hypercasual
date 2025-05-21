@@ -10,9 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 2638506804918123564}
   - component: {fileID: 5481520551598651073}
+  - component: {fileID: 1927441031783194311}
   - component: {fileID: 1910543269974233471}
   - component: {fileID: 890560592170818712}
   - component: {fileID: 7291222579638947261}
+  - component: {fileID: 8437119460746700049}
   m_Layer: 0
   m_Name: Skeleton
   m_TagString: Enemy
@@ -50,6 +52,27 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: 576f50b86067c0641bd9cf545599e869, type: 2}
   currentHealth: 0
   currentSpeed: 0
+--- !u!114 &1927441031783194311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6588124262921990806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1daa9062570835d4f9b479799dfa62ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drops:
+  - prefab: {fileID: 620919022563149689, guid: 4cd985917810d0142808452fcc1c9500, type: 3}
+    dropRate: 100
+  - prefab: {fileID: 8711006352317569773, guid: d1cad897a3e20bd4a9c633a8d3bb3732, type: 3}
+    dropRate: 10
+  - prefab: {fileID: 8305567040399087926, guid: e1668032c06e75742a18e558c96b5fb8, type: 3}
+    dropRate: 1
+  - prefab: {fileID: 7385691065702196407, guid: 9b97dccd9b89f9c4ba21e93896e18307, type: 3}
+    dropRate: 0.1
 --- !u!212 &1910543269974233471
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -158,3 +181,30 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!50 &8437119460746700049
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6588124262921990806}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 100
+  m_LinearDrag: 10
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4

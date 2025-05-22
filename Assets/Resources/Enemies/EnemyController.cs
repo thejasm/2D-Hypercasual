@@ -7,16 +7,25 @@ public class EnemyController : MonoBehaviour
     Transform target;
     public EnemyScriptableObject stats;
     private Animator animator;
+    private DropRateManager dropRateManager;
     public float currentHealth;
     public float currentSpeed;
+    public float currentDamage;
+
 
     void Awake(){
         target = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();
+        dropRateManager = GetComponent<DropRateManager>();
 
         currentHealth = stats.MaxHealth;
         currentSpeed = stats.Speed;
+        currentDamage = stats.Damage;
 
+    }
+
+    private void Start() {
+        StartCoroutine(DespawnDistanceDetector());
     }
 
     void Update(){
@@ -24,7 +33,7 @@ public class EnemyController : MonoBehaviour
     }
 
     void Walk() {
-        transform.position = Vector2.MoveTowards(transform.position, target.position, stats.Speed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, target.position, currentSpeed * Time.deltaTime);
         if (target.position.x < transform.position.x) this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
         else this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
     }
@@ -32,18 +41,43 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(float dmg) {
         currentHealth -= dmg;
         animator.SetTrigger("Hurt");
-        if(currentHealth <= 0) {
-            animator.SetTrigger("Die");
-        }
+        if (currentHealth <= 0) Die();
+    }
+
+    public void Die() {
+        animator.SetTrigger("Die");
+        currentSpeed = 0;
+        dropRateManager.DropLoot();
+        Destroy(gameObject, 0.5f);
     }
 
     public void Destroy() {
             Destroy(gameObject);
     }
 
+    IEnumerator DespawnDistanceDetector() {
+        while (true) {
+            if ((transform.position - target.position).sqrMagnitude > 1024f) { // 32f squared
+                if(stats.Important) {
+                    Vector2 randomPoint = Random.insideUnitCircle;
+                    Vector3 spawnOffset = (Vector3)randomPoint.normalized * FindObjectOfType<EnemySpawner>().spawnRadius;
+                    Vector3 spawnPoint = target.transform.position + spawnOffset;
+                    transform.position = spawnPoint;
+
+                } else Destroy(gameObject);
+            }
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
     private void OnCollisionStay2D(Collision2D col) {
         if(col.gameObject.tag == "Player") {
-            col.gameObject.GetComponent<PlayerCore>().TakeDamage(stats.Damage);
+            col.gameObject.GetComponent<PlayerCore>().TakeDamage(currentDamage);
         }
+    }
+
+    private void OnDestroy() {
+        EnemySpawner es = FindObjectOfType<EnemySpawner>();
+        es.enemiesAlive--;
     }
 }

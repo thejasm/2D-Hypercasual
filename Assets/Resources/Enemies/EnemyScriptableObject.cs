@@ -9,7 +9,10 @@ public class EnemyScriptableObject: ScriptableObject {
     GameObject prefab;
     public GameObject Prefab { get => prefab; set => prefab = value; }
 
-    [Header("Enemy Stats")] //------------------------------------------------------------------------------------- [Header("Enemy Stats")]
+    [SerializeField]
+    bool important;
+    public bool Important { get => important; set => important = value; }
+
     [SerializeField]
     float maxHealth;
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }

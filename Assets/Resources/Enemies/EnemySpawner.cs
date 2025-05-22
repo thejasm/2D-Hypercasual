@@ -6,6 +6,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [System.Serializable]
     public class Wave {
+
         public string waveName;
         public List<EnemyGroup> enemyGroups;
         public int waveQuota;
@@ -34,7 +35,7 @@ public class EnemySpawner : MonoBehaviour
 
     void Start() {
         CalculateWaveQuota();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = FindObjectOfType<PlayerCore>().transform;
     }
 
     void Update(){
@@ -90,10 +91,5 @@ public class EnemySpawner : MonoBehaviour
             currentWaveCount++;
             CalculateWaveQuota();
         }
-    }
-
-    void OnDrawGizmos() {
-        UnityEditor.Handles.color = UnityEngine.Color.red;
-        UnityEditor.Handles.DrawWireDisc(player.transform.position, Vector3.forward, spawnRadius);
     }
 }

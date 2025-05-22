@@ -23,10 +23,6 @@ public class PlayerScriptableObject : ScriptableObject
     public float MoveSpeed { get { return moveSpeed; } set { moveSpeed = value; } }
 
     [SerializeField]
-    float might;
-    public float Might { get { return might; } set { might = value; } }
-
-    [SerializeField]
     float magnetism;
     public float Magnetism { get { return magnetism; } set { magnetism = value; } }
 

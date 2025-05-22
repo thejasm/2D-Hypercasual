@@ -7,16 +7,11 @@ public class PlayerCore : MonoBehaviour
     public PlayerScriptableObject stats;
     private Healthbar healthbar;
 
+    [Header("Current Stats")]
     public float currentHealth;
-    [HideInInspector]
     public float currentRecovery;
-    [HideInInspector]
     public float currentMoveSpeed;
-    [HideInInspector]
-    public float currentMight;
-    [HideInInspector]
     public float currentAttackSpeedModifier;
-    [HideInInspector]
     public float currentMagnetism;
 
     [Header("XP and Level")]
@@ -24,9 +19,6 @@ public class PlayerCore : MonoBehaviour
     public int level = 1;
     public int expCap = 0;
     private ExpBar expBar;
-
-    [Header("Weapons")]
-    public List<GameObject> spawnedWeapons;
 
     [Header("I Frames")]
     public float iFramesDuration = 0.5f;
@@ -44,6 +36,10 @@ public class PlayerCore : MonoBehaviour
     private Animator anim;
     private bool isFacingRight = true;
 
+    InventoryManager inventory;
+    public int weaponIndex = 0;
+    public int itemIndex = 0;
+
 
     private void Awake() {
         if (PowerSelector.instance != null) { 
@@ -51,13 +47,14 @@ public class PlayerCore : MonoBehaviour
             PowerSelector.instance.DestroySingleton();
         } else Debug.LogWarning("PowerSelector instance is null. Using default stats.");
 
+        inventory = GetComponent<InventoryManager>();
+
         currentHealth = stats.MaxHealth;
         currentRecovery = stats.Recovery;
         currentMoveSpeed = stats.MoveSpeed;
-        currentMight = stats.Might;
         currentMagnetism = stats.Magnetism;
 
-        SpawnWeapon(stats.StartingWeapon);
+        AddWeaponController(stats.StartingWeapon);
     }
 
     public void Start() {
@@ -131,11 +128,65 @@ public class PlayerCore : MonoBehaviour
         }
     }
 
-    // Weapon System ----------------------------------------------------- Weapon System 
-    public void SpawnWeapon(GameObject weaponPrefab) {
+    // Weapon System ----------------------------------------------------- Weapon & Item System 
+    public void AddWeaponController(GameObject weaponPrefab) {
+        if(weaponIndex >= InventoryManager.MaxSlots) {
+            Debug.LogWarning("No more weapon slots available.");
+            return;
+        }
+
         GameObject spawnedWeapon = Instantiate(weaponPrefab, transform.position, Quaternion.identity);
         spawnedWeapon.transform.parent = transform;
-        spawnedWeapons.Add(spawnedWeapon);
+        inventory.AddWeapon(weaponIndex++, spawnedWeapon);
+    }
+    public void AddItem(GameObject itemPrefab) {
+        if (itemIndex >= InventoryManager.MaxSlots) {
+            Debug.LogWarning("No more item slots available.");
+            return;
+        }
+
+        WeaponScriptableObject weaponStat = WeaponScriptableObject.CreateInstance<WeaponScriptableObject>();
+
+        switch (itemPrefab.GetComponent<PassiveItem>().stats.statToModify) {
+            case PassiveItemScriptableObject.ModifiableStatType.MaxHealth:
+                currentHealth *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.Recovery:
+                currentRecovery *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.MoveSpeed:
+                currentMoveSpeed *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.Magnetism:
+                currentMagnetism *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.Damage:
+                weaponStat.Damage *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(weaponStat, 0);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.Speed:
+                weaponStat.Speed *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(weaponStat, 1);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.CooldownDuration:
+                weaponStat.CooldownDuration *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(weaponStat, 2);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.Pierce:
+                weaponStat.Pierce *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(weaponStat, 3);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.ActiveDuration:
+                weaponStat.ActiveDuration *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(weaponStat, 5);
+                break;
+            case PassiveItemScriptableObject.ModifiableStatType.Size:
+                weaponStat.Size *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(weaponStat, 6);
+                break;
+        }
+
+        inventory.AddItem(itemIndex++, itemPrefab);
     }
 
     // Player Damage and Death ----------------------------------------------- Player Damage and Death 

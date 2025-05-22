@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MissileController : WeaponContorller
+public class MissileController : WeaponController
 {
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
     }
 
     // Update is called once per frame
@@ -15,6 +15,6 @@ public class MissileController : WeaponContorller
     {
         base.Attack();
         GameObject spawnedMissile = Instantiate(stats.Prefab, transform.position, Quaternion.identity);
-        spawnedMissile.GetComponent<ProjectileBehaviour>().SetVector(GetEnemyDirection(), stats.Speed);
+        spawnedMissile.GetComponent<ProjectileBehaviour>().SetDirection(GetEnemyDirection());
     }
 }

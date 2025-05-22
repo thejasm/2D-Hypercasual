@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyController : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class EnemyController : MonoBehaviour
 
     IEnumerator DespawnDistanceDetector() {
         while (true) {
-            if ((transform.position - target.position).sqrMagnitude > 1024f) { // 32f squared
+            if ((transform.position - target.position).sqrMagnitude > 500f) {
                 if(stats.Important) {
                     Vector2 randomPoint = Random.insideUnitCircle;
                     Vector3 spawnOffset = (Vector3)randomPoint.normalized * FindObjectOfType<EnemySpawner>().spawnRadius;
@@ -77,6 +78,8 @@ public class EnemyController : MonoBehaviour
     }
 
     private void OnDestroy() {
+        if(!gameObject.scene.isLoaded) return;
+
         EnemySpawner es = FindObjectOfType<EnemySpawner>();
         es.enemiesAlive--;
     }

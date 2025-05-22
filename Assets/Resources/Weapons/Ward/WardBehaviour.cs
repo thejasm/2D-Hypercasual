@@ -8,23 +8,22 @@ public class WardBehaviour : MeleeBehaviour
     Animator animator;
     private float timer = 0;
     private float damageTimer = 0;
-    public Transform player;
 
     List<GameObject> markedEnemies = new List<GameObject>();
 
     protected override void Start(){
+        base.Start();
         animator = GetComponent<Animator>();
-        if(player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void Update() {
-        transform.position = player.position + stats.Offset;
-        transform.rotation = transform.rotation * Quaternion.Euler(0, 0, stats.Speed * 0.1f);
+        transform.position = base.player.position + weaponController.currentOffset;
+        transform.rotation = transform.rotation * Quaternion.Euler(0, 0, weaponController.currentSpeed * 0.1f);
 
         TickDamage();
 
         timer += Time.deltaTime;
-        if (timer <= destroyAfter) return;
+        if (timer <= weaponController.currentActiveDuration) return;
         //else
         animator.SetTrigger("End");
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("Despawn") && 
@@ -52,7 +51,7 @@ public class WardBehaviour : MeleeBehaviour
         damageTimer = 0;
         foreach (GameObject enemy in markedEnemies) {
             if (enemy == null) continue;
-            enemy.GetComponent<EnemyController>().TakeDamage(stats.Damage);
+            enemy.GetComponent<EnemyController>().TakeDamage(weaponController.currentDamage);
         }
     }
 

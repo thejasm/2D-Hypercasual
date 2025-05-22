@@ -8,6 +8,7 @@ TagManager:
   - Weapon
   - ExpGem
   - Food
+  - PassiveItem
   layers:
   - Default
   - TransparentFX

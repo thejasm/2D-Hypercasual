@@ -6,6 +6,14 @@ using static PassiveItemScriptableObject;
 [CreateAssetMenu (fileName = "PassiveItemScriptableObject", menuName = "ScriptableObjects/Passive Item", order = 1)]
 public class PassiveItemScriptableObject : ScriptableObject
 {
+    [SerializeField]
+    int level;
+    public int Level { get => level; set => level = value; }
+
+    [SerializeField]
+    GameObject nextLevelPrefab;
+    public GameObject NextLevelPrefab { get => nextLevelPrefab; set => nextLevelPrefab = value; }
+
     public enum ModifiableStatType {
         MaxHealth,
         Recovery,

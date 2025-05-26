@@ -10,7 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9fb06b89240f3d24fb8a23f033298c79, type: 3}
-  m_Name: WingsStats
+  m_Name: WingsStats 1
   m_EditorClassIdentifier: 
+  level: 1
+  nextLevelPrefab: {fileID: 5861267320189842787, guid: 71f8b5c6d0830e649bd6fc39a4e624af, type: 3}
   statToModify: 2
   multiplier: 20

@@ -9,6 +9,14 @@ public class WeaponScriptableObject: ScriptableObject {
     GameObject prefab;
     public GameObject Prefab { get => prefab; set => prefab = value; }
 
+    [SerializeField]
+    int level;
+    public int Level { get => level; set => level = value; }
+
+    [SerializeField]
+    GameObject nextLevelPrefab;
+    public GameObject NextLevelPrefab { get => nextLevelPrefab; set => nextLevelPrefab = value; }
+
     [Header("Base Stats")] //------------------------------------------------------------------------------------- [Header("Base Stats")]
     [SerializeField]
     float damage = 1;

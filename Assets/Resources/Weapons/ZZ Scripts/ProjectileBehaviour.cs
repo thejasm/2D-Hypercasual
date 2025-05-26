@@ -17,7 +17,7 @@ public class ProjectileBehaviour : MonoBehaviour
     protected virtual void Start() {
         weaponController = GetComponentInParent<WeaponController>();
         if (weaponController == null) {
-            Debug.LogError("ProjectileBehaviour must be attached to a GameObject with a WeaponController component.");
+            weaponController = FindAnyObjectByType<WeaponController>();
         }
 
         projectilePierce = weaponController.currentPierce;

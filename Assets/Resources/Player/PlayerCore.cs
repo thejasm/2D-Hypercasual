@@ -7,12 +7,60 @@ public class PlayerCore : MonoBehaviour
     public PlayerScriptableObject stats;
     private Healthbar healthbar;
 
-    [Header("Current Stats")]
-    public float currentHealth;
-    public float currentRecovery;
-    public float currentMoveSpeed;
-    public float currentAttackSpeedModifier;
-    public float currentMagnetism;
+    [Header("Current Stats")] float currentHealth;
+    public float CurrentHealth {
+        get { return currentHealth; }
+        set {
+            currentHealth = value;
+            if (GameManager.instance != null) {
+                GameManager.instance.currentHealth.text = currentHealth.ToString();
+            }
+        }
+    }
+
+    float currentRecovery;
+    public float CurrentRecovery {
+        get { return currentRecovery; }
+        set {
+            currentRecovery = value;
+            if (GameManager.instance != null && GameManager.instance.currentRecovery != null) {
+                GameManager.instance.currentRecovery.text = currentRecovery.ToString();
+            }
+        }
+    }
+
+    float currentMoveSpeed;
+    public float CurrentMoveSpeed {
+        get { return currentMoveSpeed; }
+        set {
+            currentMoveSpeed = value;
+            if (GameManager.instance != null && GameManager.instance.currentMoveSpeed != null) {
+                GameManager.instance.currentMoveSpeed.text = currentMoveSpeed.ToString();
+            }
+        }
+    }
+
+    float currentAttackSpeedModifier;
+    public float CurrentAttackSpeedModifier {
+        get { return currentAttackSpeedModifier; }
+        set {
+            currentAttackSpeedModifier = value;
+            if (GameManager.instance != null && GameManager.instance.currentAttackSpeedModifier != null) {
+                GameManager.instance.currentAttackSpeedModifier.text = currentAttackSpeedModifier.ToString();
+            }
+        }
+    }
+
+    float currentMagnetism;
+    public float CurrentMagnetism {
+        get { return currentMagnetism; }
+        set {
+            currentMagnetism = value;
+            if (GameManager.instance != null && GameManager.instance.currentMagnetism != null) {
+                GameManager.instance.currentMagnetism.text = currentMagnetism.ToString();
+            }
+        }
+    }
 
     [Header("XP and Level")]
     public int exp = 0;
@@ -53,8 +101,6 @@ public class PlayerCore : MonoBehaviour
         currentRecovery = stats.Recovery;
         currentMoveSpeed = stats.MoveSpeed;
         currentMagnetism = stats.Magnetism;
-
-        AddWeaponController(stats.StartingWeapon);
     }
 
     public void Start() {
@@ -66,6 +112,16 @@ public class PlayerCore : MonoBehaviour
         anim = GetComponent<Animator>();
         
         expGems = new List<GameObject>();
+
+        AddWeaponController(stats.StartingWeapon);
+
+        if (GameManager.instance != null) {
+            GameManager.instance.currentHealth.text = currentHealth.ToString();
+            GameManager.instance.currentRecovery.text = currentRecovery.ToString();
+            GameManager.instance.currentMoveSpeed.text = currentMoveSpeed.ToString();
+            GameManager.instance.currentAttackSpeedModifier.text = currentAttackSpeedModifier.ToString();
+            GameManager.instance.currentMagnetism.text = currentMagnetism.ToString();
+        }
     }
 
     void Update() {

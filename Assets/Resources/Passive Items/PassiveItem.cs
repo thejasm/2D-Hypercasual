@@ -14,7 +14,7 @@ public class PassiveItem : MonoBehaviour
             PlayerCore player = collision.gameObject.GetComponent<PlayerCore>();
             if (player != null) {
                 player.AddItem(this.gameObject);
-                //Destroy(this.gameObject);
+                this.GetComponent<Collider2D>().enabled = false;
             }
         }
     }

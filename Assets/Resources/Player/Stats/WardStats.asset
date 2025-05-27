@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: WardStats
   m_EditorClassIdentifier: 
   startingWeapon: {fileID: 5170756163708559982, guid: ef83cde9af07cac4e89ee19b5a33a2b1, type: 3}
-  maxHealth: 10
+  maxHealth: 10000
   recovery: 0.1
   moveSpeed: 5
-  might: 1
   magnetism: 3

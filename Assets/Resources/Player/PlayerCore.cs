@@ -7,7 +7,9 @@ public class PlayerCore : MonoBehaviour
     public PlayerScriptableObject stats;
     private Healthbar healthbar;
 
-    [Header("Current Stats")] float currentHealth;
+    #region Stats
+    [Header("Current Stats")] 
+    float currentHealth;
     public float CurrentHealth {
         get { return currentHealth; }
         set {
@@ -61,7 +63,8 @@ public class PlayerCore : MonoBehaviour
             }
         }
     }
-
+    #endregion
+    
     [Header("XP and Level")]
     public int exp = 0;
     public int level = 1;
@@ -114,6 +117,8 @@ public class PlayerCore : MonoBehaviour
         expGems = new List<GameObject>();
 
         AddWeaponController(stats.StartingWeapon);
+
+        GameManager.instance.DisableScreens();
 
         if (GameManager.instance != null) {
             GameManager.instance.currentHealth.text = currentHealth.ToString();
@@ -268,8 +273,11 @@ public class PlayerCore : MonoBehaviour
     }
 
     public void Die() {
-
-        Debug.Log("Player is dead");
+        if (!GameManager.instance.isGameOver) {
+            GameManager.instance.AssignLevelReached(level);
+            GameManager.instance.AssignWeaponsAndItems(inventory.weaponSlots, inventory.itemSlots);
+            GameManager.instance.GameOver();
+        }
     }
 
     public void IFrameTimer() {
@@ -281,6 +289,7 @@ public class PlayerCore : MonoBehaviour
 
     // Player Movement ----------------------------------------------------- Player Movement 
     void InputManager() {
+        if (GameManager.instance.isGameOver) return;
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
         moveDir = new Vector2(moveX, moveY).normalized;

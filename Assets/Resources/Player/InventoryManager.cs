@@ -57,7 +57,7 @@ public class InventoryManager: MonoBehaviour {
             itemSlots[slotIndex] = pi;
             itemLevels[slotIndex] = pi.stats.Level;
 
-            item.transform.parent = itemFrames[slotIndex].transform;
+            item.transform.SetParent(itemFrames[slotIndex].transform);
             item.GetComponent<RectTransform>().localPosition = Vector3.zero;
         }
     }

@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
     public enum GameState {
         Gameplay,
         Paused,
-        GameOver
+        GameOver,
+        LevelUp
     }
 
     public GameState currentState;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject pauseScreen;
     public GameObject resultsScreen;
+    public GameObject levelUpScreen;
 
     [Header("Pause Screen Elements")]
     public TMP_Text currentHealth;
@@ -28,12 +30,18 @@ public class GameManager : MonoBehaviour
     public TMP_Text currentMagnetism;
 
     public bool isGameOver = false;
+    public bool isUpgrading = false;
 
     [Header("Results Screen Elements")]
     public TMP_Text levelReached;
     public TMP_Text timeSurvived;
     public List<Image> weaponList = new List<Image>(6);
     public List<Image> itemList = new List<Image>(6);
+
+    [Header("Timer")]
+    public float timeLimit;
+    float timerTime;
+    public TMP_Text timerText;
 
     private void Awake() {
         if(instance == null) instance = this;
@@ -43,6 +51,7 @@ public class GameManager : MonoBehaviour
         switch (currentState) {
             case GameState.Gameplay:
                 CheckForPauseAndResume();
+                UpdateTimer();
                 break;
 
             case GameState.Paused:
@@ -56,6 +65,14 @@ public class GameManager : MonoBehaviour
                     DisplayResults();
                 }
                 break;
+
+            case GameState.LevelUp:
+                if (!isUpgrading) {
+                    isUpgrading = true;
+                    levelUpScreen.SetActive(true);
+                    Time.timeScale = 0f;
+                }
+                break;
             default:
                 Debug.LogError("Unknown game state: " + currentState);
                 break;
@@ -67,6 +84,7 @@ public class GameManager : MonoBehaviour
     public void DisableScreens() {
         pauseScreen.SetActive(false);
         resultsScreen.SetActive(false);
+        levelUpScreen.SetActive(false);
     }
 
     public void PauseGame() {
@@ -100,13 +118,13 @@ public class GameManager : MonoBehaviour
     public void GameOver() { ChangeState(GameState.GameOver); }
 
     void DisplayResults() {
+        AssignTimeSurvived();
         resultsScreen.SetActive(true);
 
     }
 
-    public void AssignLevelReached(int level) {
-        levelReached.text = level.ToString();
-    }
+    public void AssignLevelReached(int level) { levelReached.text = level.ToString(); }
+    public void AssignTimeSurvived() { timeSurvived.text = timerText.text; }
 
     public void AssignWeaponsAndItems(List<WeaponController> weapons, List<PassiveItem> items) {
         if(weapons.Count != weaponList.Count || items.Count != itemList.Count) {
@@ -133,5 +151,30 @@ public class GameManager : MonoBehaviour
             itemList[i].sprite = sr.sprite;
             itemList[i].enabled = true;
         }
+    }
+
+    void UpdateTimer() { 
+        timerTime += Time.deltaTime;
+        UpdateTimerDisplay();
+
+        if (timerTime >= timeLimit) {
+            GameOver();
+        }
+    }
+
+    void UpdateTimerDisplay() {
+        int minutes = Mathf.FloorToInt(timerTime / 60);
+        int seconds = Mathf.FloorToInt(timerTime % 60);
+
+        timerText.text = string.Format("{0:D2}:{1:D2}", minutes, seconds);
+    }
+
+    public void StartLevelUp() { ChangeState(GameState.LevelUp);  }
+
+    public void EndLevelUp() {
+        isUpgrading = false;
+        Time.timeScale = 1f;
+        levelUpScreen.SetActive(false);
+        ChangeState(GameState.Gameplay);
     }
 }

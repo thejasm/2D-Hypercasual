@@ -175,6 +175,8 @@ public class PlayerCore : MonoBehaviour
                 }
             }
             expCap += expCapIncrease;
+
+            GameManager.instance.StartLevelUp();
         }
     }
 

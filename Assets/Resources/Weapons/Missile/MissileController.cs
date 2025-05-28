@@ -14,7 +14,7 @@ public class MissileController : WeaponController
     protected override void Attack()
     {
         base.Attack();
-        GameObject spawnedMissile = Instantiate(stats.Prefab, transform.position, Quaternion.identity);
+        GameObject spawnedMissile = Instantiate(stats.SpawnableObject, transform.position, Quaternion.identity);
         spawnedMissile.GetComponent<ProjectileBehaviour>().SetDirection(GetEnemyDirection());
     }
 }

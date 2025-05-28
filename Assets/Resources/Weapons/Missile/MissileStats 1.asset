@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32e1679ec2b800544a928424337cc10e, type: 3}
   m_Name: MissileStats 1
   m_EditorClassIdentifier: 
-  prefab: {fileID: 7423107348680452410, guid: ff94a5d33421e9d46a55ef9fc1c193c7, type: 3}
+  prefab: {fileID: 7058226103281135942, guid: a5ac3158dbd186d498ffeea4b4e3d845, type: 3}
   level: 1
-  nextLevelPrefab: {fileID: 0}
+  nextLevelPrefab: {fileID: 7058226103281135942, guid: 88b1d45ae79b20840b83aa9444d12acc, type: 3}
+  name: Magic Missile
+  description: Cast missiles that seek nearby enemies
+  spawnableObject: {fileID: 7423107348680452410, guid: ff94a5d33421e9d46a55ef9fc1c193c7, type: 3}
   damage: 1
   speed: 5
   cooldownDuration: 1

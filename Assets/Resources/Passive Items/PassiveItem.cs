@@ -40,6 +40,7 @@ public class PassiveItem: MonoBehaviour {
     void Start() {
         cam = Camera.main;
         GameObject pObj = GameObject.FindGameObjectWithTag("Player");
+        if(targetCanvas == null) targetCanvas = FindObjectOfType<Canvas>();
         if (pObj != null) playerT = pObj.transform;
 
         if (pointerHolderSource == null || targetCanvas == null) {

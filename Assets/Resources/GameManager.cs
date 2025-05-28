@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
     float timerTime;
     public TMP_Text timerText;
 
+    public GameObject player;
+
     private void Awake() {
         if(instance == null) instance = this;
     }
@@ -169,7 +171,10 @@ public class GameManager : MonoBehaviour
         timerText.text = string.Format("{0:D2}:{1:D2}", minutes, seconds);
     }
 
-    public void StartLevelUp() { ChangeState(GameState.LevelUp);  }
+    public void StartLevelUp() { 
+        ChangeState(GameState.LevelUp);
+        player.SendMessage("RemoveAndApplyUpgrades");
+    }
 
     public void EndLevelUp() {
         isUpgrading = false;

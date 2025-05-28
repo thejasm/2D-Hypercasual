@@ -198,6 +198,12 @@ public class PlayerCore : MonoBehaviour
             return;
         }
 
+        for (int i = 0; i < weaponIndex; i++) {
+            if (inventory.weaponSlots[i].stats.WeaponClass == weaponPrefab.GetComponent<WeaponController>().stats.WeaponClass) {
+                inventory.LevelupItem(i);
+            }
+        }
+
         GameObject spawnedWeapon = Instantiate(weaponPrefab, transform.position, Quaternion.identity);
         spawnedWeapon.transform.parent = transform;
         inventory.AddWeapon(weaponIndex++, spawnedWeapon);
@@ -208,7 +214,13 @@ public class PlayerCore : MonoBehaviour
             return;
         }
 
-        WeaponScriptableObject weaponStat = WeaponScriptableObject.CreateInstance<WeaponScriptableObject>();
+        for (int i = 0; i < itemIndex; i++) {
+            if (inventory.itemSlots[i].stats.ItemClass == itemPrefab.GetComponent<PassiveItem>().stats.ItemClass) {
+                inventory.LevelupItem(i);
+            }
+        }
+
+        float modifier = 0;
 
         switch (itemPrefab.GetComponent<PassiveItem>().stats.statToModify) {
             case PassiveItemScriptableObject.ModifiableStatType.MaxHealth:
@@ -224,28 +236,28 @@ public class PlayerCore : MonoBehaviour
                 currentMagnetism *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.Damage:
-                weaponStat.Damage *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
-                inventory.ApplyModifier(weaponStat, 0);
+                modifier *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(modifier, 0);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.Speed:
-                weaponStat.Speed *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
-                inventory.ApplyModifier(weaponStat, 1);
+                modifier *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(modifier, 1);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.CooldownDuration:
-                weaponStat.CooldownDuration *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
-                inventory.ApplyModifier(weaponStat, 2);
+                modifier *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(modifier, 2);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.Pierce:
-                weaponStat.Pierce *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
-                inventory.ApplyModifier(weaponStat, 3);
+                modifier *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(modifier, 3);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.ActiveDuration:
-                weaponStat.ActiveDuration *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
-                inventory.ApplyModifier(weaponStat, 5);
+                modifier *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(modifier, 5);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.Size:
-                weaponStat.Size *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
-                inventory.ApplyModifier(weaponStat, 6);
+                modifier *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                inventory.ApplyModifier(modifier, 6);
                 break;
         }
 

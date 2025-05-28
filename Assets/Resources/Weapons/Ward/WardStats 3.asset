@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32e1679ec2b800544a928424337cc10e, type: 3}
   m_Name: WardStats 3
   m_EditorClassIdentifier: 
-  prefab: {fileID: 6044952887424073573, guid: 0f12fe8e4e1e78942970018f29df35c5, type: 3}
+  prefab: {fileID: 5170756163708559982, guid: 734ae466a3a4a7147a70f16047c93ddd, type: 3}
   level: 1
   nextLevelPrefab: {fileID: 0}
+  name: Ward Level 3
+  description: Increased Size, Damage, and duration
+  spawnableObject: {fileID: 6044952887424073573, guid: 0f12fe8e4e1e78942970018f29df35c5, type: 3}
   damage: 0.7
   speed: 1
   cooldownDuration: 8

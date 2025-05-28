@@ -7,7 +7,7 @@ using static UnityEditor.Progress;
 
 public class InventoryManager: MonoBehaviour {
     public bool levelUpWeapon = false;
-    public  bool levelUpItem = false;
+    public bool levelUpItem = false;
 
     public List<WeaponController> weaponSlots;
     public int[] weaponLevels = new int[6];
@@ -23,7 +23,7 @@ public class InventoryManager: MonoBehaviour {
 
 
     [System.Serializable]
-    public class  WeaponUpgrade{
+    public class WeaponUpgrade {
         public GameObject initialWeapon;
         public WeaponScriptableObject weaponData;
     }
@@ -65,142 +65,208 @@ public class InventoryManager: MonoBehaviour {
     }
 
     public void AddWeapon(int slotIndex, GameObject weapon) {
-        Debug.Log("Adding weapon to slot " + slotIndex);
         if (slotIndex >= 0 && slotIndex < MaxSlots) {
             WeaponController wc = weapon.GetComponent<WeaponController>();
             weaponSlots[slotIndex] = wc;
             weaponLevels[slotIndex] = wc.stats.Level;
 
+            // Create UI image for the weapon icon
             GameObject weaponImg = new GameObject();
             weaponImg.AddComponent<Image>();
             weaponImg.GetComponent<Image>().sprite = weapon.GetComponent<SpriteRenderer>().sprite;
+            weaponImg.transform.Rotate(0, 0, 180);
             weaponImg.transform.SetParent(weaponFrames[slotIndex].transform, false);
         }
 
-
+        if (GameManager.instance != null && GameManager.instance.isUpgrading) GameManager.instance.EndLevelUp();
     }
 
     public void AddItem(int slotIndex, GameObject item) {
-        Debug.Log("Adding item to slot " + slotIndex);
         if (slotIndex >= 0 && slotIndex < MaxSlots) {
             PassiveItem pi = item.GetComponent<PassiveItem>();
             itemSlots[slotIndex] = pi;
             itemLevels[slotIndex] = pi.stats.Level;
 
-            item.transform.SetParent(itemFrames[slotIndex].transform);
-            item.GetComponent<RectTransform>().localPosition = Vector3.zero;
+            // Create UI image for the item icon
+            GameObject itemImg = new GameObject();
+            itemImg.AddComponent<Image>();
+            itemImg.GetComponent<Image>().sprite = item.GetComponent<SpriteRenderer>().sprite;
+            itemImg.transform.Rotate(0, 0, 180);
+            itemImg.transform.SetParent(itemFrames[slotIndex].transform, false);
+
+            item.SetActive(false); // Deactivate added item's game object
         }
+
+        if (GameManager.instance != null && GameManager.instance.isUpgrading) GameManager.instance.EndLevelUp();
     }
 
     public void LevelupWeapon(int slotIndex) {
-        if (weaponSlots[slotIndex] == null) {
-            Debug.LogWarning("No weapon in slot " + slotIndex + " to level up.");
-            return;
-        }
+        if (weaponSlots[slotIndex] == null) return;
 
         WeaponController wc = weaponSlots[slotIndex];
+        if (wc.stats.NextLevelPrefab == null) return; // Already max level
 
-        if(wc.stats.NextLevelPrefab == null) {
-            Debug.LogWarning("Max upgrade reached for " + wc.name);
-            return;
-        }
-
+        // Create and place the upgraded version
         GameObject upgradedWeapon = Instantiate(wc.stats.NextLevelPrefab, transform.position, Quaternion.identity);
         upgradedWeapon.transform.SetParent(transform);
-        AddWeapon(slotIndex, upgradedWeapon);
-        Destroy(wc.gameObject);
+        AddWeapon(slotIndex, upgradedWeapon); // Add new, replacing old in logic
+        Destroy(wc.gameObject); // Remove old weapon instance
         weaponLevels[slotIndex] = upgradedWeapon.GetComponent<WeaponController>().stats.Level;
+
+        if (GameManager.instance != null && GameManager.instance.isUpgrading) GameManager.instance.EndLevelUp();
     }
 
     public void LevelupItem(int slotIndex) {
-        if (itemSlots[slotIndex] == null) {
-            Debug.LogWarning("No item in slot " + slotIndex + " to level up.");
-            return;
-        }
+        if (itemSlots[slotIndex] == null) return;
 
         PassiveItem pi = itemSlots[slotIndex];
+        if (pi.stats.NextLevelPrefab == null) return; // Already max level
 
-        if (pi.stats.NextLevelPrefab == null) {
-            Debug.LogWarning("Max upgrade reached for " + pi.name);
-            return;
-        }
-
-
+        // Create and place the upgraded version
         GameObject upgradedItem = Instantiate(pi.stats.NextLevelPrefab, transform.position, Quaternion.identity);
-        AddItem(slotIndex, upgradedItem);
-        Destroy(pi.gameObject);
+        AddItem(slotIndex, upgradedItem); // Add new, replacing old in logic
+        pi.gameObject.SetActive(false); // Deactivate old item instance
         itemLevels[slotIndex] = upgradedItem.GetComponent<PassiveItem>().stats.Level;
+
+        if (GameManager.instance != null && GameManager.instance.isUpgrading) GameManager.instance.EndLevelUp();
     }
 
-    public void ApplyModifier(WeaponScriptableObject newStats, int index) {
+    public void ApplyModifier(float modifier, int index) {
         for (int i = 0; i < MaxSlots; i++) {
             if (weaponSlots[i] != null) {
                 switch (index) {
-                    case 0:
-                        weaponSlots[i].currentDamage += newStats.Damage;
-                        break;
-                    case 1:
-                        weaponSlots[i].currentSpeed += newStats.Speed;
-                        break;
-                    case 2:
-                        weaponSlots[i].currentCooldownDuration += newStats.CooldownDuration;
-                        break;
-                    case 3:
-                        weaponSlots[i].currentPierce += newStats.Pierce;
-                        break;
-                    case 5:
-                        weaponSlots[i].currentActiveDuration += newStats.ActiveDuration;
-                        break;
-                    case 6:
-                        weaponSlots[i].currentSize += newStats.Size;
-                        break;
+                    case 0: weaponSlots[i].currentDamage += modifier; break;
+                    case 1: weaponSlots[i].currentSpeed += modifier; break;
+                    case 2: weaponSlots[i].currentCooldownDuration += modifier; break;
+                    case 3: weaponSlots[i].currentPierce += modifier; break;
+                    case 5: weaponSlots[i].currentActiveDuration += modifier; break;
+                    case 6: weaponSlots[i].currentSize += modifier; break;
                 }
             }
         }
     }
 
     void ApplyUpgradeOptions() {
-        foreach(var upgradeOption in upgradeUIOptions) {
-            int upgradeType = Random.Range(1, 3);
+        // Use copies for current selection batch
+        List<WeaponUpgrade> availableWeaponUpgrades = new List<WeaponUpgrade>(weaponUpgradeOptions);
+        List<ItemUpgrade> availableItemUpgrades = new List<ItemUpgrade>(itemUpgradeOptions);
+
+        foreach (var upgradeOption in upgradeUIOptions) {
+            int upgradeType;
+            // Decide: weapon or item offer for this UI slot
+            if (availableWeaponUpgrades.Count == 0) upgradeType = 2;
+            else if (availableItemUpgrades.Count == 0) upgradeType = 1;
+            else upgradeType = Random.Range(1, 3);
+
             if (upgradeType == 1) { // type is weapon
-                WeaponUpgrade chosenWeaponUpgrade = weaponUpgradeOptions[Random.Range(0, weaponUpgradeOptions.Count)];
+                if (availableWeaponUpgrades.Count == 0) { DisableUpgradeOption(upgradeOption); continue; }
+                WeaponUpgrade chosenWeaponUpgrade = availableWeaponUpgrades[Random.Range(0, availableWeaponUpgrades.Count)];
+                availableWeaponUpgrades.Remove(chosenWeaponUpgrade); // Prevent duplicate offers in this batch
 
                 if (chosenWeaponUpgrade != null) {
+                    EnableUpgradeOption(upgradeOption);
+
                     bool newWeapon = false;
                     for (int i = 0; i < weaponSlots.Count; i++) {
-                        if (weaponSlots[i] != null && weaponSlots[i].stats == chosenWeaponUpgrade.weaponData) {
+                        if (weaponSlots[i] != null && weaponSlots[i].stats.WeaponClass == chosenWeaponUpgrade.weaponData.WeaponClass) {
                             newWeapon = false;
+                            WeaponController equippedWeapon = weaponSlots[i]; // Get the currently equipped weapon
 
-                            upgradeOption.button.onClick.AddListener(() => LevelupWeapon(i));
+                            // The equipped weapon itself is at its max level
+                            if (equippedWeapon.stats.NextLevelPrefab == null) DisableUpgradeOption(upgradeOption);
+                            // The equipped weapon has an upgrade available
+                            else {
+                                upgradeOption.button.onClick.AddListener(() => LevelupWeapon(i));
+
+                                // Get details from the NextLevelPrefab of the EQUIPPED weapon
+                                WeaponController nextLevelController = equippedWeapon.stats.NextLevelPrefab.GetComponent<WeaponController>();
+                                if (nextLevelController != null && nextLevelController.stats != null) {
+                                    upgradeOption.upgradeNameDisplay.text = nextLevelController.stats.Name;
+                                    upgradeOption.upgradeDescriptionDisplay.text = nextLevelController.stats.Description;
+                                }
+                                else DisableUpgradeOption(upgradeOption); // Prefab data missing
+                            }
                             break;
                         }
                         else newWeapon = true;
                     }
                     if (newWeapon) {
-                        upgradeOption.button.onClick.AddListener(() => player.AddWeaponController(chosenWeaponUpgrade.initialWeapon));
+                        // Check if this base weapon type has no next level
+                        if (chosenWeaponUpgrade.weaponData.NextLevelPrefab == null) DisableUpgradeOption(upgradeOption);
+                        // It's a new weapon and it has a potential upgrade path from its base form.
+                        else {
+                            upgradeOption.button.onClick.AddListener(() => player.AddWeaponController(chosenWeaponUpgrade.initialWeapon));
+                            upgradeOption.upgradeNameDisplay.text = chosenWeaponUpgrade.weaponData.Name;
+                            upgradeOption.upgradeDescriptionDisplay.text = chosenWeaponUpgrade.weaponData.Description;
+                        }
                     }
+                    upgradeOption.upgradeIcon.sprite = chosenWeaponUpgrade.initialWeapon.GetComponent<SpriteRenderer>().sprite;
                 }
+                else DisableUpgradeOption(upgradeOption);
             }
-            else if (upgradeType == 2) {
-                ItemUpgrade chosenItemUpgrade = itemUpgradeOptions[Random.Range(0, itemUpgradeOptions.Count)];
+            else if (upgradeType == 2) { // type is item
+                if (availableItemUpgrades.Count == 0) { DisableUpgradeOption(upgradeOption); continue; }
+                ItemUpgrade chosenItemUpgrade = availableItemUpgrades[Random.Range(0, availableItemUpgrades.Count)];
+                availableItemUpgrades.Remove(chosenItemUpgrade); // Prevent duplicate offers
 
                 if (chosenItemUpgrade != null) {
+                    EnableUpgradeOption(upgradeOption);
+
                     bool newItem = false;
                     for (int i = 0; i < itemSlots.Count; i++) {
-                        if (itemSlots[i] != null && itemSlots[i].stats == chosenItemUpgrade.itemData) {
+                        if (itemSlots[i] != null && itemSlots[i].stats != null && itemSlots[i].stats.ItemClass == chosenItemUpgrade.itemData.ItemClass) {
                             newItem = false;
+                            PassiveItem equippedItem = itemSlots[i]; // Get the currently equipped item
 
-                            upgradeOption.button.onClick.AddListener(() => LevelupItem(i));
+                            // The equipped item itself is at its max level
+                            if (equippedItem.stats.NextLevelPrefab == null) DisableUpgradeOption(upgradeOption);
+                            // The equipped item has an upgrade available
+                            else {
+                                upgradeOption.button.onClick.AddListener(() => LevelupItem(i));
+                                PassiveItem nextLevelController = equippedItem.stats.NextLevelPrefab.GetComponent<PassiveItem>();
+
+                                // Get details from the NextLevelPrefab of the EQUIPPED item
+                                if (nextLevelController != null && nextLevelController.stats != null) {
+                                    upgradeOption.upgradeNameDisplay.text = nextLevelController.stats.Name;
+                                    upgradeOption.upgradeDescriptionDisplay.text = nextLevelController.stats.Description;
+                                }
+                                else DisableUpgradeOption(upgradeOption);
+                            }
                             break;
                         }
                         else newItem = true;
                     }
-                    if (newItem) {
-                        upgradeOption.button.onClick.AddListener(() => player.AddItem(chosenItemUpgrade.initialItem));
-                    }
-                }
 
+                    if (newItem) {
+                        // Check if this base item type has no next level
+                        if (chosenItemUpgrade.itemData.NextLevelPrefab == null) DisableUpgradeOption(upgradeOption);
+                        // It's a new item and it has a potential upgrade path from its base form.
+                        else {
+                            upgradeOption.button.onClick.AddListener(() => player.AddItem(chosenItemUpgrade.initialItem));
+                            upgradeOption.upgradeNameDisplay.text = chosenItemUpgrade.itemData.Name;
+                            upgradeOption.upgradeDescriptionDisplay.text = chosenItemUpgrade.itemData.Description;
+                        }
+                    }
+                    upgradeOption.upgradeIcon.sprite = chosenItemUpgrade.initialItem.GetComponent<SpriteRenderer>().sprite;
+                }
+                else DisableUpgradeOption(upgradeOption);
             }
         }
     }
+
+    void RemoveUpgradeOptions() {
+        foreach (var upgradeOption in upgradeUIOptions) {
+            upgradeOption.button.onClick.RemoveAllListeners();
+            DisableUpgradeOption(upgradeOption);
+        }
+    }
+
+    public void RemoveAndApplyUpgrades() {
+        RemoveUpgradeOptions();
+        ApplyUpgradeOptions();
+    }
+
+    void DisableUpgradeOption(UpgradeUI ui) { ui.button.gameObject.SetActive(false); }
+
+    void EnableUpgradeOption(UpgradeUI ui) { ui.button.gameObject.SetActive(true); }
 }

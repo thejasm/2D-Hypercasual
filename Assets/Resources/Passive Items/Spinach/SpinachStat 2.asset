@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: SpinachStat 2
   m_EditorClassIdentifier: 
   level: 1
-  nextLevelPrefab: {fileID: 0}
+  nextLevelPrefab: {fileID: 5983902541486536293, guid: a09918c1992f82c42852f85a6f402df6, type: 3}
+  name: Spinach Level 2
+  description: Increases Damage
   statToModify: 4
-  multiplier: 100
+  multiplier: 50

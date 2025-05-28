@@ -67,7 +67,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drops:
   - prefab: {fileID: 620919022563149689, guid: 4cd985917810d0142808452fcc1c9500, type: 3}
-    dropRate: 90
+    dropRate: 30
   - prefab: {fileID: 7385691065702196407, guid: 9b97dccd9b89f9c4ba21e93896e18307, type: 3}
     dropRate: 1
   - prefab: {fileID: 8711006352317569773, guid: d1cad897a3e20bd4a9c633a8d3bb3732, type: 3}

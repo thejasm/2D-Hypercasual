@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: MissileStats 3
   m_EditorClassIdentifier: 
   prefab: {fileID: 7058226103281135942, guid: f05f08197fe886149a59619216f5f3bc, type: 3}
-  level: 1
+  weaponClass: Missile
+  level: 3
   nextLevelPrefab: {fileID: 0}
   name: Missile Level 3
   description: Increased Damage and Firerate

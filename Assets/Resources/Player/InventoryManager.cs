@@ -46,6 +46,8 @@ public class InventoryManager: MonoBehaviour {
     public List<ItemUpgrade> itemUpgradeOptions = new List<ItemUpgrade>();
     public List<UpgradeUI> upgradeUIOptions = new List<UpgradeUI>();
 
+    public Image chestImage;
+
 
     void Awake() {
         weaponSlots = new List<WeaponController>(new WeaponController[MaxSlots]);
@@ -269,4 +271,69 @@ public class InventoryManager: MonoBehaviour {
     void DisableUpgradeOption(UpgradeUI ui) { ui.button.gameObject.SetActive(false); }
 
     void EnableUpgradeOption(UpgradeUI ui) { ui.button.gameObject.SetActive(true); }
+
+    public void ChestSelector() {
+        int availableWeapons = weaponSlots.Count;
+        int availableItems = itemSlots.Count;
+        int selectionIndex = Random.Range(0, (availableWeapons + availableItems));
+        if (selectionIndex < availableWeapons) LevelupWeapon(selectionIndex);
+        else LevelupItem(selectionIndex - availableWeapons);
+
+        List<Sprite> availableOptions = new List<Sprite>();
+        foreach(var weapon in weaponSlots) availableOptions.Add(weapon != null ? weapon.GetComponent<SpriteRenderer>().sprite : null);
+        foreach(var item in itemSlots) availableOptions.Add(item != null ? item.GetComponent<SpriteRenderer>().sprite : null);
+        StartCoroutine(Spin(availableOptions, selectionIndex));
+    }
+
+    public IEnumerator Spin(List<Sprite> availableOptions, int selectionIndex) {
+        Debug.LogError("starting spin coroutine");
+        if (availableOptions == null || availableOptions.Count == 0) {
+            Debug.LogError("Available Options list is empty or null!");
+            yield break;
+        }
+        if (selectionIndex < 0 || selectionIndex >= availableOptions.Count) {
+            Debug.LogError("Selection Index is out of bounds!");
+            yield break;
+        }
+
+        float fastSpinDur = 0.5f;
+        float slowDownDur = 1f;
+        float totalDur = fastSpinDur + slowDownDur;
+
+        float timePassed = 0f;
+        int currentOptIndex = 0;
+        int finalIndex = selectionIndex;
+
+        // --- Rapid Spin Phase ---
+        while (timePassed < fastSpinDur) {
+            chestImage.sprite = availableOptions[currentOptIndex];
+            currentOptIndex = (currentOptIndex + 1) % availableOptions.Count;
+            timePassed += Time.unscaledDeltaTime;
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        // --- Slow Down Phase ---
+        int cyclesToTarget = availableOptions.Count * 2;
+        int effectiveTargetIndex = finalIndex + cyclesToTarget;
+
+        float spinProgress = 0f;
+        while (spinProgress < 1f) {
+            spinProgress = (timePassed - fastSpinDur) / slowDownDur;
+
+            // Use an eased curve for slowing down
+            float easedProgress = 1f - (1f - spinProgress) * (1f - spinProgress);
+
+            // Calculate the current index based on eased progress
+            // Adding a large number and then modulo to handle negative results and ensure enough spins
+            float currentRelativeIndex = easedProgress * effectiveTargetIndex;
+            currentOptIndex = (int)Mathf.Round(currentRelativeIndex) % availableOptions.Count;
+
+            chestImage.sprite = availableOptions[currentOptIndex];
+
+            timePassed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        chestImage.sprite = availableOptions[finalIndex];
+    }
 }

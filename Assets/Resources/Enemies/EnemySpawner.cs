@@ -30,6 +30,7 @@ public class EnemySpawner : MonoBehaviour
     public List<Wave> waves;
     public int currentWaveCount = 0;
     public float waveInterval = 60f;
+    bool isWaveActive = false;
 
     private Transform player;
 
@@ -39,7 +40,7 @@ public class EnemySpawner : MonoBehaviour
     }
 
     void Update(){
-        if (currentWaveCount < waves.Count && waves[currentWaveCount].spawnCount == 0) StartCoroutine(BeginNextWave());
+        if (currentWaveCount < waves.Count && waves[currentWaveCount].spawnCount == 0 && !isWaveActive) StartCoroutine(BeginNextWave());
 
         spawnTimer += Time.deltaTime;
 
@@ -57,20 +58,11 @@ public class EnemySpawner : MonoBehaviour
     }
 
     void SpawnEnemies() {
-        if(maxEnemiesReached){
-            if(enemiesAlive < maxEnemiesAllowed) maxEnemiesReached = false;
-            else return;
-        }
+        if(maxEnemiesReached) return;
 
         if (waves[currentWaveCount].spawnCount < waves[currentWaveCount].waveQuota) {
             foreach (var enemyGroup in waves[currentWaveCount].enemyGroups) {
                 if (enemyGroup.spawnCount < enemyGroup.enemyCount) {
-
-                    if(enemiesAlive >= maxEnemiesAllowed) {
-                        maxEnemiesReached = true;
-                        return;
-                    }
-
                     Vector2 randomPoint = Random.insideUnitCircle;
                     Vector3 spawnOffset = (Vector3)randomPoint.normalized * spawnRadius;
                     Vector3 spawnPoint = player.transform.position + spawnOffset;
@@ -80,16 +72,27 @@ public class EnemySpawner : MonoBehaviour
                     enemyGroup.spawnCount++;
                     waves[currentWaveCount].spawnCount++;
                     enemiesAlive++;
+
+                    if (enemiesAlive >= maxEnemiesAllowed) maxEnemiesReached = true;
+
                 }
             }
         }
     }
 
     IEnumerator BeginNextWave() {
+        isWaveActive = true;
         yield return new WaitForSeconds(waveInterval);
         if (currentWaveCount < waves.Count - 1) {
+            isWaveActive = false;
             currentWaveCount++;
             CalculateWaveQuota();
         }
     }
+
+    public void OnEnemyKilled() {
+        enemiesAlive--;
+        if (enemiesAlive < maxEnemiesAllowed) maxEnemiesReached = false;
+    }
+
 }

@@ -4,7 +4,7 @@ using InteliMapPro;
 
 public class InfiniteChunkLoader: MonoBehaviour {
     public InteliMapGenerator generator;
-    public Camera mainCam;
+    public Transform player;
 
     public int chunkSize = 25;
     public int radius = 1;
@@ -14,15 +14,14 @@ public class InfiniteChunkLoader: MonoBehaviour {
     private Coroutine chunkLoadingCoroutine;
 
     void Start() {
-        if (mainCam == null) mainCam = Camera.main;
         grid = generator.GetComponentInParent<Grid>();
 
-        currentChunk = GetChunkCoord(mainCam.transform.position);
+        currentChunk = GetChunkCoord(player.transform.position);
         LoadChunks(currentChunk);
     }
 
     void Update() {
-        Vector2Int newCurrentChunk = GetChunkCoord(mainCam.transform.position);
+        Vector2Int newCurrentChunk = GetChunkCoord(player.transform.position);
         if (newCurrentChunk != currentChunk) {
             currentChunk = newCurrentChunk;
             LoadChunks(currentChunk);

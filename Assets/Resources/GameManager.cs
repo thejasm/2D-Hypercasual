@@ -12,7 +12,9 @@ public class GameManager : MonoBehaviour
         Gameplay,
         Paused,
         GameOver,
-        LevelUp
+        LoadIn,
+        LevelUp,
+        ChestOpen
     }
 
     public GameState currentState;
@@ -20,7 +22,9 @@ public class GameManager : MonoBehaviour
 
     public GameObject pauseScreen;
     public GameObject resultsScreen;
+    public GameObject loadScreen;
     public GameObject levelUpScreen;
+    public GameObject chestScreen;
 
     [Header("Pause Screen Elements")]
     public TMP_Text currentHealth;
@@ -31,12 +35,17 @@ public class GameManager : MonoBehaviour
 
     public bool isGameOver = false;
     public bool isUpgrading = false;
+    public bool isChestOpen = false;
 
     [Header("Results Screen Elements")]
     public TMP_Text levelReached;
     public TMP_Text timeSurvived;
     public List<Image> weaponList = new List<Image>(6);
     public List<Image> itemList = new List<Image>(6);
+
+    [Header("Load Screen Elements")]
+    public Slider loadBar;
+    public float loadTime = 3f;
 
     [Header("Timer")]
     public float timeLimit;
@@ -47,12 +56,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake() {
         if(instance == null) instance = this;
+        ChangeState(GameState.LoadIn);
     }
 
     private void Update() {
         switch (currentState) {
             case GameState.Gameplay:
                 CheckForPauseAndResume();
+                if (Time.timeScale != 1f) Time.timeScale = 1f;
                 UpdateTimer();
                 break;
 
@@ -67,11 +78,23 @@ public class GameManager : MonoBehaviour
                     DisplayResults();
                 }
                 break;
+            case GameState.LoadIn:
+                Time.timeScale = 0;
+                loadScreen.SetActive(true);
+                StartCoroutine(LoadSlider());
+                break;
 
             case GameState.LevelUp:
                 if (!isUpgrading) {
                     isUpgrading = true;
                     levelUpScreen.SetActive(true);
+                    Time.timeScale = 0f;
+                }
+                break;
+            case GameState.ChestOpen:
+                if (!isChestOpen) {
+                    isChestOpen = true;
+                    chestScreen.SetActive(true);
                     Time.timeScale = 0f;
                 }
                 break;
@@ -87,6 +110,7 @@ public class GameManager : MonoBehaviour
         pauseScreen.SetActive(false);
         resultsScreen.SetActive(false);
         levelUpScreen.SetActive(false);
+        chestScreen.SetActive(false);
     }
 
     public void PauseGame() {
@@ -125,7 +149,19 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void AssignLevelReached(int level) { levelReached.text = level.ToString(); }
+    public IEnumerator LoadSlider() {
+        float timer = 0f;
+        while (timer < loadTime) {
+            timer += Time.unscaledDeltaTime;
+            loadBar.value = Mathf.Lerp(0, 100, timer / loadTime);
+            yield return null;
+        }
+        loadBar.value = 100;
+        loadScreen.SetActive(false);
+        ChangeState(GameState.Gameplay);
+    }
+
+        public void AssignLevelReached(int level) { levelReached.text = level.ToString(); }
     public void AssignTimeSurvived() { timeSurvived.text = timerText.text; }
 
     public void AssignWeaponsAndItems(List<WeaponController> weapons, List<PassiveItem> items) {
@@ -180,6 +216,18 @@ public class GameManager : MonoBehaviour
         isUpgrading = false;
         Time.timeScale = 1f;
         levelUpScreen.SetActive(false);
+        ChangeState(GameState.Gameplay);
+    }
+
+    public void OpenChest() {
+        ChangeState(GameState.ChestOpen);
+        player.SendMessage("ChestSelector");
+    }
+
+    public void CloseChest() {
+        isChestOpen = false;
+        Time.timeScale = 1f;
+        chestScreen.SetActive(false);
         ChangeState(GameState.Gameplay);
     }
 }

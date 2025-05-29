@@ -27,7 +27,7 @@ RectTransform:
   m_GameObject: {fileID: 1963715845063998814}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 30, y: 30, z: 1}
+  m_LocalScale: {x: 40, y: 40, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8208750951179443279}
@@ -109,7 +109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -7.49, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5723922892518717874
@@ -148,7 +148,7 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1, y: 1}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: -1, y: 0.5}
 --- !u!222 &6849062938853580878
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -197,6 +197,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6879844968500065006}
   - component: {fileID: 8136049524205560161}
+  - component: {fileID: 3881804318169219733}
   - component: {fileID: 7766897250542302067}
   - component: {fileID: 2160717723881990809}
   - component: {fileID: 2434100199954480759}
@@ -207,7 +208,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6879844968500065006
 RectTransform:
   m_ObjectHideFlags: 0
@@ -241,13 +242,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: f081c29fba802e0448b4dac200a4b7d7, type: 2}
+--- !u!114 &3881804318169219733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5983902541486536293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcb0aec45a3195c41ae7ec5e41d88b43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   pointerHolderSource: {fileID: 5022342595283015232}
   targetCanvas: {fileID: 0}
   arrowTr: {fileID: 512758926601302461}
   iconTr: {fileID: 3383491424793427782}
   maxDist: 20
-  screenBorder: 60
-  arrowOrbitRadius: 0
+  screenBorder: 120
+  arrowOrbitRadius: 10
 --- !u!212 &7766897250542302067
 SpriteRenderer:
   m_ObjectHideFlags: 0

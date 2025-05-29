@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WingsStats 3
   m_EditorClassIdentifier: 
   level: 3
+  itemClass: wings
   nextLevelPrefab: {fileID: 0}
   name: Wings Level 3
   description: Increases Speed

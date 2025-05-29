@@ -9,15 +9,18 @@ public class EnemyController : MonoBehaviour
     public EnemyScriptableObject stats;
     private Animator animator;
     private DropRateManager dropRateManager;
+    private EnemySpawner spawner;
     public float currentHealth;
     public float currentSpeed;
     public float currentDamage;
+    float knockbackMult = 2000f;
 
 
     void Awake(){
         target = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();
         dropRateManager = GetComponent<DropRateManager>();
+        spawner = FindObjectOfType<EnemySpawner>();
 
         currentHealth = stats.MaxHealth;
         currentSpeed = stats.Speed;
@@ -45,10 +48,16 @@ public class EnemyController : MonoBehaviour
         if (currentHealth <= 0) Die();
     }
 
+    public void Knockback(float val) {
+        Vector2 dir = (transform.position - target.position).normalized;
+        this.gameObject.GetComponent<Rigidbody2D>().AddForce(dir * (val * knockbackMult));
+    }
+
     public void Die() {
         animator.SetTrigger("Die");
         currentSpeed = 0;
         dropRateManager.DropLoot();
+        spawner.OnEnemyKilled();
         Destroy(gameObject, 0.5f);
     }
 

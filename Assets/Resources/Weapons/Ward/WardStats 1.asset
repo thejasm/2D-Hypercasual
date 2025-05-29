@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WardStats 1
   m_EditorClassIdentifier: 
   prefab: {fileID: 5170756163708559982, guid: ef83cde9af07cac4e89ee19b5a33a2b1, type: 3}
+  weaponClass: Ward
   level: 1
   nextLevelPrefab: {fileID: 5170756163708559982, guid: f1e92d7a0472bb941863f8329cc3c85e, type: 3}
   name: Ward

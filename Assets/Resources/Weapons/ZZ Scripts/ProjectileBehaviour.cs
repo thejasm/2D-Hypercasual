@@ -5,14 +5,12 @@ using UnityEngine.EventSystems;
 
 public class ProjectileBehaviour : MonoBehaviour
 {
-    private WeaponController weaponController;
+    protected WeaponController weaponController;
 
     public Vector3 direction;
     public float projectilePierce = 0;
     public float destroyAfter = 5f;
-
-    protected void Awake() {
-    }
+    public float knockbackForce = 2f;
 
     protected virtual void Start() {
         weaponController = GetComponentInParent<WeaponController>();
@@ -42,6 +40,7 @@ public class ProjectileBehaviour : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Enemy")) {
             other.gameObject.GetComponent<EnemyController>().TakeDamage(weaponController.currentDamage);
+            other.gameObject.GetComponent<EnemyController>().Knockback(knockbackForce);
         }
     }
 

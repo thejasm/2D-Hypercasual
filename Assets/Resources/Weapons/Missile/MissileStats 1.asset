@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MissileStats 1
   m_EditorClassIdentifier: 
   prefab: {fileID: 7058226103281135942, guid: a5ac3158dbd186d498ffeea4b4e3d845, type: 3}
+  weaponClass: Missile
   level: 1
   nextLevelPrefab: {fileID: 7058226103281135942, guid: 88b1d45ae79b20840b83aa9444d12acc, type: 3}
   name: Magic Missile

@@ -272,8 +272,10 @@ public class InventoryManager: MonoBehaviour {
     void EnableUpgradeOption(UpgradeUI ui) { ui.button.gameObject.SetActive(true); }
 
     public void ChestSelector() {
-        int availableWeapons = weaponSlots.Count;
-        int availableItems = itemSlots.Count;
+        int availableWeapons = 0;
+        int availableItems = 0;
+        foreach (var weapon in weaponSlots) if (weapon != null) availableWeapons++;
+        foreach (var item in itemSlots) if (item != null) availableItems++;
         int selectionIndex = Random.Range(0, (availableWeapons + availableItems));
         if (selectionIndex < availableWeapons) LevelupWeapon(selectionIndex);
         else LevelupItem(selectionIndex - availableWeapons);
@@ -281,11 +283,12 @@ public class InventoryManager: MonoBehaviour {
         List<Sprite> availableOptions = new List<Sprite>();
         foreach(var weapon in weaponSlots) availableOptions.Add(weapon != null ? weapon.GetComponent<SpriteRenderer>().sprite : null);
         foreach(var item in itemSlots) availableOptions.Add(item != null ? item.GetComponent<SpriteRenderer>().sprite : null);
-        StartCoroutine(Spin(availableOptions, selectionIndex));
+        //StartCoroutine(Spin(availableOptions, selectionIndex));
+        Debug.Log(availableOptions + " " + selectionIndex);
+        chestImage.sprite = availableOptions[selectionIndex];
     }
 
     public IEnumerator Spin(List<Sprite> availableOptions, int selectionIndex) {
-        Debug.LogError("starting spin coroutine");
         if (availableOptions == null || availableOptions.Count == 0) {
             Debug.LogError("Available Options list is empty or null!");
             yield break;

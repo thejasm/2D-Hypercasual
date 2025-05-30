@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Unity.Loading;
 
 public class GameManager : MonoBehaviour
 {
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
     [Header("Load Screen Elements")]
     public Slider loadBar;
     public float loadTime = 3f;
+    Coroutine loadingBar;
 
     [Header("Timer")]
     public float timeLimit;
@@ -56,11 +58,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake() {
         if(instance == null) instance = this;
+        else Destroy(gameObject);
         ChangeState(GameState.LoadIn);
     }
 
     private void Update() {
         switch (currentState) {
+            case GameState.LoadIn:
+                break;
             case GameState.Gameplay:
                 CheckForPauseAndResume();
                 if (Time.timeScale != 1f) Time.timeScale = 1f;
@@ -78,12 +83,6 @@ public class GameManager : MonoBehaviour
                     DisplayResults();
                 }
                 break;
-            case GameState.LoadIn:
-                Time.timeScale = 0;
-                loadScreen.SetActive(true);
-                StartCoroutine(LoadSlider());
-                break;
-
             case GameState.LevelUp:
                 if (!isUpgrading) {
                     isUpgrading = true;
@@ -104,7 +103,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ChangeState(GameState newState) { currentState = newState; }
+    public void ChangeState(GameState newState) {
+        //Debug.LogWarning($"GameManager.ChangeState called. Current: {currentState}, New: {newState}. Time: {Time.time}", this);
+        //Debug.LogWarning($"Stack trace for state change to {newState}: \n{new System.Diagnostics.StackTrace(true).ToString()}", this);
+
+        currentState = newState;
+
+        if (currentState == GameState.LoadIn) {
+            Time.timeScale = 0;
+            loadScreen.SetActive(true);
+            if (loadingBar != null) StopCoroutine(loadingBar);
+            loadingBar = StartCoroutine(LoadSlider());
+        }
+    }
 
     public void DisableScreens() {
         pauseScreen.SetActive(false);
@@ -159,6 +170,7 @@ public class GameManager : MonoBehaviour
         loadBar.value = 100;
         loadScreen.SetActive(false);
         ChangeState(GameState.Gameplay);
+        loadingBar = null;
     }
 
         public void AssignLevelReached(int level) { levelReached.text = level.ToString(); }
@@ -225,6 +237,8 @@ public class GameManager : MonoBehaviour
     }
 
     public void CloseChest() {
+        Debug.Log("CloseChest() called! Stack Trace: \n" + new System.Diagnostics.StackTrace(true).ToString()); // ADD THIS LINE
+
         isChestOpen = false;
         Time.timeScale = 1f;
         chestScreen.SetActive(false);

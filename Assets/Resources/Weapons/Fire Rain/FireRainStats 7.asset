@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32e1679ec2b800544a928424337cc10e, type: 3}
+  m_Name: FireRainStats 7
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 7058226103281135942, guid: 4b4b8454cdff8ba48ae07b3a050bc9a8, type: 3}
+  weaponClass: Fire Rain
+  level: 7
+  nextLevelPrefab: {fileID: 7058226103281135942, guid: 0c13696c0d690b644994bd8cc7929a84, type: 3}
+  name: Fire Rain
+  description: Fireballs rain down on the battlefield
+  spawnableObject: {fileID: 8602862336875867294, guid: 4a221c211dfc37e44b9b8c14e28f0ea1, type: 3}
+  damage: 2.25
+  speed: 5
+  cooldownDuration: 1.3
+  pierce: 0
+  offset: {x: 0, y: 0, z: 0}
+  activeDuration: 0
+  size: 0

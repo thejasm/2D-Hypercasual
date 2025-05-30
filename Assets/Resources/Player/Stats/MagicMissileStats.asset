@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0624db02006b57c4fbe0af6fe97ede43, type: 3}
   m_Name: MagicMissileStats
   m_EditorClassIdentifier: 
-  startingWeapon: {fileID: 7058226103281135942, guid: 9b3a6a360d16a7f4784b3b582a11f7ae, type: 3}
+  startingWeapon: {fileID: 7058226103281135942, guid: a5ac3158dbd186d498ffeea4b4e3d845, type: 3}
   maxHealth: 10
   recovery: 0.1
   moveSpeed: 5
-  magnetism: 3
+  magnetism: 1

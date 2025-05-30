@@ -18,4 +18,4 @@ MonoBehaviour:
   name: Spinach
   description: Increases Damage
   statToModify: 4
-  multiplier: 20
+  multiplier: 10

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08add155f5ed6f447a5afc1126d1a904, type: 3}
   m_Name: FlyingEyeStats
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
+  prefab: {fileID: 6448144165357142442, guid: 4740fc1d1347eae4ea5bce2f44da342e, type: 3}
   important: 0
   maxHealth: 1
   damage: 1

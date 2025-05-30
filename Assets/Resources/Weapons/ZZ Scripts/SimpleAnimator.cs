@@ -5,7 +5,7 @@ public class SimpleAnimator : MonoBehaviour {
     public string spriteFolderPath;
     public float fps = 12f;
 
-    new SpriteRenderer renderer;
+    SpriteRenderer renderer;
     Sprite[] frames;
     int currentFrameIndex;
     float timer;

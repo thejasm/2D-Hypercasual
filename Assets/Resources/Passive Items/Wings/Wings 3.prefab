@@ -165,14 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eebbad70637fc94a82d97d3befd7b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 11d50c448731406459bfb61c5de8eae8, type: 2}
-  pointerHolderSource: {fileID: 818434929376844032}
-  targetCanvas: {fileID: 0}
-  arrowTr: {fileID: 88814025777579735}
-  iconTr: {fileID: 4208723195097911994}
-  maxDist: 20
-  screenBorder: 60
-  arrowOrbitRadius: 0
+  stats: {fileID: 11400000, guid: be23f06a58d273d4cb4c4994e41d4417, type: 2}
 --- !u!212 &167778902862541912
 SpriteRenderer:
   m_ObjectHideFlags: 0

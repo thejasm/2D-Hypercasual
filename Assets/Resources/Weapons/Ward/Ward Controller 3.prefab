@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ea4fdfebd517f4398eeb944393fc41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 751148c3947ff0748b754a5b618d7ef3, type: 2}
+  stats: {fileID: 11400000, guid: 0f1ac29f1e8ea494f93b38cb06f21a2c, type: 2}
   nearestEnemy: {fileID: 0}
   currentDamage: 0
   currentSpeed: 0

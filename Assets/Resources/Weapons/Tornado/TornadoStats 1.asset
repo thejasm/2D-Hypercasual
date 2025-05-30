@@ -15,7 +15,7 @@ MonoBehaviour:
   prefab: {fileID: 7058226103281135942, guid: 2ecc4d1d18ac7ad4b8b74a8b01f07f22, type: 3}
   weaponClass: Tornado
   level: 1
-  nextLevelPrefab: {fileID: 7058226103281135942, guid: 88b1d45ae79b20840b83aa9444d12acc, type: 3}
+  nextLevelPrefab: {fileID: 7058226103281135942, guid: 4682437f5d7396f4e9c4bad42f9daa23, type: 3}
   name: Tornado
   description: Casts a tornado that spins around the battlefield
   spawnableObject: {fileID: 7423107348680452410, guid: abbfce9eba6022d42b6d130fff713e05, type: 3}

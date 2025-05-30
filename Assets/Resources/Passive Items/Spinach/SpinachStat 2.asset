@@ -15,7 +15,7 @@ MonoBehaviour:
   level: 2
   itemClass: Spinach
   nextLevelPrefab: {fileID: 5983902541486536293, guid: 8aa257af858eb4b4694dcd2f8ccf14f2, type: 3}
-  name: Spinach Level 2
+  name: Spinach 2
   description: Increases Damage
   statToModify: 4
-  multiplier: 50
+  multiplier: 25

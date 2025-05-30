@@ -15,7 +15,7 @@ MonoBehaviour:
   level: 2
   itemClass: wings
   nextLevelPrefab: {fileID: 5861267320189842787, guid: 4aaef989547cb0546960de5857994dbc, type: 3}
-  name: Wings Level 2
+  name: Wings 2
   description: Increases Speed
   statToModify: 2
-  multiplier: 50
+  multiplier: 20

@@ -18,4 +18,4 @@ MonoBehaviour:
   name: Wings
   description: Increases Speed
   statToModify: 2
-  multiplier: 20
+  multiplier: 10

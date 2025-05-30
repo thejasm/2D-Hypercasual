@@ -157,14 +157,18 @@ public class PlayerCore : MonoBehaviour
     public List<LevelRange> levelRanges;
 
     public void GainXP(int amount) {
+        Debug.Log("exp: " + exp + " gaining: " + amount + " cap: " + expCap);
         exp += amount;
         LevelUpCheck();
         expBar.UpdateBar(exp, expCap);
     }
 
     public void LevelUpCheck() {
+        Debug.Log("Check level up");
         if (exp >= expCap) {
+            Debug.Log("Level up");
             level++;
+            GameManager.instance.StartLevelUp();
             exp -= expCap;
 
             int expCapIncrease = 0;
@@ -176,7 +180,6 @@ public class PlayerCore : MonoBehaviour
             }
             expCap += expCapIncrease;
 
-            GameManager.instance.StartLevelUp();
         }
     }
 
@@ -244,7 +247,7 @@ public class PlayerCore : MonoBehaviour
                 inventory.ApplyModifier(modifier, 1);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.CooldownDuration:
-                modifier *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                modifier *= 1 - (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
                 inventory.ApplyModifier(modifier, 2);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.Pierce:
@@ -252,7 +255,7 @@ public class PlayerCore : MonoBehaviour
                 inventory.ApplyModifier(modifier, 3);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.ActiveDuration:
-                modifier *= 1 + (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
+                modifier *= 1 - (itemPrefab.GetComponent<PassiveItem>().stats.Multiplier / 100);
                 inventory.ApplyModifier(modifier, 5);
                 break;
             case PassiveItemScriptableObject.ModifiableStatType.Size:

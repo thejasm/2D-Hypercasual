@@ -44,7 +44,7 @@ public class PassiveItemScriptableObject : ScriptableObject
     public ModifiableStatType StatToModify { get => statToModify; private set => statToModify = value; }
 
     [SerializeField]
-    [Tooltip("in 1 + multiplier/100")]
+    [Tooltip("in 1 +/- multiplier/100")]
     float multiplier;
     public float Multiplier { get => multiplier; private set => multiplier = value; }
 }

@@ -219,9 +219,9 @@ MonoBehaviour:
   damage: 1
   playerTransform: {fileID: 0}
   minRadiusFromPlayer: 0
-  maxRadiusFromPlayer: 10
+  maxRadiusFromPlayer: 8
   fallSpeed: 10
-  spawnOffsetFromTarget: {x: 10, y: 10}
+  spawnOffsetFromTarget: {x: 8, y: 8}
   timeToLand: 1
   SpreadTime: 2
 --- !u!95 &3488759779648646214

@@ -563,7 +563,7 @@ MonoBehaviour:
         m_MethodName: SelectPower
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: ce71ba182e75a3a418412c0559bec96b, type: 2}
+          m_ObjectArgument: {fileID: 11400000, guid: c3342dde05f1d6c4b9af78b95737585e, type: 2}
           m_ObjectArgumentAssemblyTypeName: PlayerScriptableObject, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -725,7 +725,7 @@ MonoBehaviour:
         m_MethodName: SelectPower
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: ce71ba182e75a3a418412c0559bec96b, type: 2}
+          m_ObjectArgument: {fileID: 11400000, guid: 0ef4d10fd1017f0409faf4196f7889f1, type: 2}
           m_ObjectArgumentAssemblyTypeName: PlayerScriptableObject, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0

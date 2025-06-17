@@ -157,16 +157,16 @@ public class PlayerCore : MonoBehaviour
     public List<LevelRange> levelRanges;
 
     public void GainXP(int amount) {
-        Debug.Log("exp: " + exp + " gaining: " + amount + " cap: " + expCap);
+        //Debug.Log("exp: " + exp + " gaining: " + amount + " cap: " + expCap);
         exp += amount;
         LevelUpCheck();
         expBar.UpdateBar(exp, expCap);
     }
 
     public void LevelUpCheck() {
-        Debug.Log("Check level up");
+        //Debug.Log("Check level up");
         if (exp >= expCap) {
-            Debug.Log("Level up");
+            //Debug.Log("Level up");
             level++;
             GameManager.instance.StartLevelUp();
             exp -= expCap;

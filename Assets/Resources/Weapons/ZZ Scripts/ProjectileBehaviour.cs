@@ -13,10 +13,7 @@ public class ProjectileBehaviour : MonoBehaviour
     public float knockbackForce = 2f;
 
     protected virtual void Start() {
-        weaponController = GetComponentInParent<WeaponController>();
-        if (weaponController == null) {
-            weaponController = FindAnyObjectByType<WeaponController>();
-        }
+        weaponController = FindAnyObjectByType<MissileController>();
 
         projectilePierce = weaponController.currentPierce;
 

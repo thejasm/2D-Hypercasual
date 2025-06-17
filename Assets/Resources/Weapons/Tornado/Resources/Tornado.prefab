@@ -48,11 +48,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0, z: 0}
-  projectilePierce: 0
+  projectilePierce: 99
   destroyAfter: 5
-  knockbackForce: 5
-  waveAmplitude: 0.1
-  waveFrequency: 5
+  knockbackForce: 0.1
+  speed: 5
+  rotationalAcceleration: 50
 --- !u!114 &7641090077616042655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d259951142184247bb460cf4dcbded3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteFolderPath: Weapons/Tornado/Sprites
+  spriteFolderPath: Weapons/Tornado/Resources/Sprites
   fps: 12
 --- !u!212 &942600977336811460
 SpriteRenderer:

@@ -67,7 +67,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drops:
   - prefab: {fileID: 620919022563149689, guid: 4cd985917810d0142808452fcc1c9500, type: 3}
-    dropRate: 30
+    dropRate: 60
   - prefab: {fileID: 7385691065702196407, guid: 9b97dccd9b89f9c4ba21e93896e18307, type: 3}
     dropRate: 10
   - prefab: {fileID: 8711006352317569773, guid: d1cad897a3e20bd4a9c633a8d3bb3732, type: 3}
@@ -202,10 +202,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 10
-  m_LinearDrag: 10
+  m_Mass: 1
+  m_LinearDrag: 1
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

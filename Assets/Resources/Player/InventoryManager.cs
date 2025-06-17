@@ -284,7 +284,6 @@ public class InventoryManager: MonoBehaviour {
         foreach(var weapon in weaponSlots) availableOptions.Add(weapon != null ? weapon.GetComponent<SpriteRenderer>().sprite : null);
         foreach(var item in itemSlots) availableOptions.Add(item != null ? item.GetComponent<SpriteRenderer>().sprite : null);
         //StartCoroutine(Spin(availableOptions, selectionIndex));
-        Debug.Log(availableOptions + " " + selectionIndex);
         chestImage.sprite = availableOptions[selectionIndex];
     }
 

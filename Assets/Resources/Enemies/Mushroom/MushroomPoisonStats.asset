@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 6588124262921990806, guid: 26fee096d34927746b7d0fd4df53dc2f, type: 3}
   important: 0
-  maxHealth: 3
+  maxHealth: 2
   damage: 3
   speed: 1.5

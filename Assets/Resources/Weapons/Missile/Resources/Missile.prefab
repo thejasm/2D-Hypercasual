@@ -47,10 +47,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96155b38601e05749aacf422b0b9ea2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: dff3134ffc509794f9f77daa02d3190d, type: 2}
   direction: {x: 0, y: 0, z: 0}
+  projectilePierce: 0
   destroyAfter: 5
-  speed: 1
+  knockbackForce: 0.1
 --- !u!114 &7641090077616042655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d259951142184247bb460cf4dcbded3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteFolderPath: Weapons/Missile/Sprites
+  spriteFolderPath: Weapons/Missile/Resources/Sprites
   fps: 12
 --- !u!212 &942600977336811460
 SpriteRenderer:

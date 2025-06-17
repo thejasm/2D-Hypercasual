@@ -237,7 +237,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void CloseChest() {
-        Debug.Log("CloseChest() called! Stack Trace: \n" + new System.Diagnostics.StackTrace(true).ToString()); // ADD THIS LINE
+        //Debug.Log("CloseChest() called! Stack Trace: \n" + new System.Diagnostics.StackTrace(true).ToString());
 
         isChestOpen = false;
         Time.timeScale = 1f;
